@@ -79,12 +79,11 @@ Endpoint = ${end}
 " > ${pFile}
 
 # Add our peer configuration to the server config
-echo "
-# ${the_client} begin
-[Peer]
-PublicKey = ${clientPub}
-PresharedKey = ${pre}
+echo "# ${the_client} begin 
+[Peer] 
+PublicKey = ${clientPub} 
+PresharedKey = ${pre} 
 AllowedIPs = 10.254.132.100/32 
 # ${the_client} end
-" | tee -a wg0.conf
-
+" | tee -a /etc/wireguard/wg0.conf
+wg addconf wg0 <(wg-quick setup wg0)

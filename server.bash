@@ -1,6 +1,27 @@
-# if statem,ent that checks if "wg0.conf" exists.
-file=/etc/wireguard/wg0.conf
 #!/bin/bash
+# if statement that checks if "wg0.conf" exists.
+file=/etc/wireguard/wg0.conf
+# Checks to see if file does exist
+if [ -f "$file" ]
+then
+	# File does exists, asking user to overwrite it
+	echo "wg0.conf does exist."
+	echo "Do you wish to Overwrite the file? (Y/N) "
+	read choice
+	# If no, program will end. If yes, script will continue on to creating server conf
+	if [ "${choice}" == "N" ]
+	then
+		echo "Exiting the Program."
+		exit 0
+	elif [ "${choice}" == "Y" ]
+	then
+		echo "Overwriting Server Configuration file..."
+	# If answer is neither Y or N, will tell them they are Wrong.
+	else
+		echo "WRONG WRONG WRONG"
+		exit 1
+	fi
+fi
 # Storyline: Script to create a wireguard server
 # Create a private key
 p="$(wg genkey)"
@@ -23,29 +44,13 @@ peerInfo="# ${address} 192.168.241.131:4282 ${pub} 8.8.8.8,1.1.1.1 1280 120 0.0.
 # 6: determines the largest packet size allowed
 # 7: keeping connection alive for
 # 8: what traffic to be routed through VPN
-if [ -f "$file" ]; then
-	echo '"$file" does exist'
-	read "Do you wish to Override? (Y/N)"choice
-	if [ "$choice" == "Y" ]; then
-		echo "${peerInfo}
-		[Interface]
-		Address = ${ServerAddress}
-		PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE
-		PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens33 -j MASQUERADE
-		ListenPort = ${lport}
-		PrivateKey = ${p}
-		" > /etc/wireguard/wg0.conf;
-	if [ "$choice" == "N" ]; then
-		echo "Exiting the Program"
-		exit 1;
-	fi
-else
-	echo "${peerInfo}
-	[Interface]
-	Address = ${ServerAddress}
-    PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE
-	PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens33 -j MASQUERADE
-	ListenPort = ${lport}
-	PrivateKey = ${p}
-	" > /etc/wireguard/wg0.conf;
-fi
+
+echo "${peerInfo} 
+[Interface] 
+Address = ${ServerAddress} 
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE 
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens33 -j MASQUERADE 
+ListenPort = ${lport} 
+PrivateKey = ${p}
+" > /etc/wireguard/wg0.conf
+
