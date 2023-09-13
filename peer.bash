@@ -8,7 +8,7 @@ echo -n "What is the peer's name? "
 read the_client
 
 # Filename variable
-pFile="${the_client}-wg0.conf"
+pFile=/etc/wireguard/"${the_client}-wg0.conf"
 
 # Check for existing config file / if we want to override
 if [[ -f "${pFile}" ]]
@@ -43,25 +43,25 @@ pre="$(wg genpsk)"
 # 10.254.132.0/24,172.16.28.0/24  192.199.97.163:4282 NH9qUERcppInDrMp8aT5Lx3gPdwf6s980Msa7y1x9nE= 8.8.8.8,1.1.1.1 1280 120 0.0.0.0/0
 
 # Endpoint
-end="$(head -1 wg0.conf | awk ' { print $3 } ')"
+end="$(head -1 /etc/wireguard/wg0.conf | awk ' { print $3 } ')"
 
 # Server Public Key
-pub="$(head -1 wg0.conf | awk ' { print $4 } ')"
+pub="$(head -1 /etc/wireguard/wg0.conf | awk ' { print $4 } ')"
 
 # DNS Servers
-dns="$(head -1 wg0.conf | awk ' { print $5 } ')"
+dns="$(head -1 /etc/wireguard/wg0.conf | awk ' { print $5 } ')"
 
 # MTU
-mtu="$(head -1 wg0.conf | awk ' { print $6 } ')"
+mtu="$(head -1 /etc/wireguard/wg0.conf | awk ' { print $6 } ')"
 
 # KeepAlive
-keep="$(head -1 wg0.conf | awk ' { print $7 } ')"
+keep="$(head -1 /etc/wireguard/wg0.conf | awk ' { print $7 } ')"
 
 # ListeningPort
 lport="$(shuf -n1 -i 40000-50000)"
 
 # Default routes for VPN
-routes="$(head -1 wg0.conf | awk ' { print $8 } ')"
+routes="$(head -1 /etc/wireguard/wg0.conf | awk ' { print $8 } ')"
 
 # Create Client Configuration File
 echo "[Interface]
@@ -79,11 +79,13 @@ Endpoint = ${end}
 " > ${pFile}
 
 # Add our peer configuration to the server config
-echo "# ${the_client} begin 
-[Peer] 
-PublicKey = ${clientPub} 
-PresharedKey = ${pre} 
-AllowedIPs = 10.254.132.100/32 
+echo "# ${the_client} begin
+[Peer]
+PublicKey = ${clientPub}
+PresharedKey = ${pre}
+AllowedIPs = 10.254.132.100/32
 # ${the_client} end
 " | tee -a /etc/wireguard/wg0.conf
-wg addconf wg0 <(wg-quick setup wg0)
+# Starts up and refreshes Configuration file allowing new peers to be added without restarting
+wg-quick up wg0
+sudo wg addconf wg0 /etc/wireguard/wg0.conf
