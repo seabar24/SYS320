@@ -3,10 +3,18 @@
 # Storyline: Create peer VPN configuration file
 
 
-# What is the user / peer's name
-echo -n "What is the peer's name? "
-read the_client
+if [[ $1 == "" ]]
+then
 
+	# What is the client's name
+	echo -n "What is the peer's name? "
+	read the_client
+
+else
+
+	the_client="$1"
+
+fi
 # Filename variable
 pFile=/etc/wireguard/"${the_client}-wg0.conf"
 
@@ -63,9 +71,13 @@ lport="$(shuf -n1 -i 40000-50000)"
 # Default routes for VPN
 routes="$(head -1 /etc/wireguard/wg0.conf | awk ' { print $8 } ')"
 
+# Generate the IP address
+tempIP=$(grep AllowedIPs /etc/wireguard/wg0.conf | sort -u |tail -1 | cut -d\. -f4 | cut -d\/ -f1)
+ip=$(expr ${tempIP} + 1)
+
 # Create Client Configuration File
 echo "[Interface]
-Address = 10.254.132.100/24
+Address = 10.254.132.${ip}/24
 DNS = ${dns}
 ListenPort = ${lport}
 MTU = ${mtu}
@@ -83,7 +95,7 @@ echo "# ${the_client} begin
 [Peer]
 PublicKey = ${clientPub}
 PresharedKey = ${pre}
-AllowedIPs = 10.254.132.100/32
+AllowedIPs = 10.254.132.${ip}/32
 # ${the_client} end
 " | tee -a /etc/wireguard/wg0.conf
 # Starts up and refreshes Configuration file allowing new peers to be added without restarting
