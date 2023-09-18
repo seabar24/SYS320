@@ -138,11 +138,7 @@ function security_menu() {
 
 		L|l)
 		# Checks for open socket on network.
-		open=$(netstat -tuln)
-		echo ""
-		echo "$open"
-		echo ""
-		sleep 6
+		netstat -tuln |less
 		;;
 		C|c)
 		 users_menu
@@ -163,6 +159,7 @@ function users_menu() {
 
 	clear
 	echo "[I]D of User"
+ 	echo "[U]ser in wg0.conf"
 	echo "[L]ast Logged in Users"
 	echo "[C]urrently logged in User"
 	echo "[E]xit"
@@ -189,20 +186,24 @@ function users_menu() {
 		 	echo ""
 		 fi
 		;;
+  		U|u)
+    		 read -p "Name the user you want to check: " user
+    		 if  grep -q "# $user" /etc/wireguard/wg0.conf ; then
+       			echo "User $user does exist."
+	  		sleep 4
+	  	 else
+     		 	echo "User $user does NOT exist."
+	 		sleep 4
+	 	 fi
+    		;;
 		L|l)
 		# Checks the last 10 users that were logged in.
-		 last=$(last | head -n 10)
-		 echo ""
-		 echo "$last"
-		 echo ""
+		 last | head -n 10
 		 sleep 5
 		;;
 		C|c)
 		# Checks currently logged in user
-		 current=$(whoami)
-		 echo ""
-		 echo "$current"
-		 echo ""
+		 whoami
 		 sleep 5
 		;;
 		E|e) exit 1
