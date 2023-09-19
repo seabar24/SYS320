@@ -131,7 +131,8 @@ function security_menu() {
 	clear
 	echo "[L]ist Open Network Sockets"
 	echo "[C]heck Users"
-	echo "[E]xit"
+ 	echo "[B]ack to Menu"
+	echo "[E]xit Program"
 	read -p "Please enter a choice above: " choice
 
 	case "$choice" in
@@ -139,10 +140,14 @@ function security_menu() {
 		L|l)
 		# Checks for open socket on network.
 		netstat -tuln |less
+  		sleep 6
 		;;
 		C|c)
 		 users_menu
 		;;
+  		B|b)
+    		 menu
+       		;;
 		E|e)
 			exit 1
 		;;
