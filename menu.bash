@@ -190,6 +190,7 @@ function users_menu() {
 		 		echo ""
 		 		echo "User $user does NOT have a UID of 0."
 		 		echo ""
+     			fi
      		 else
 		 	echo "User $user does NOT exist."
 	 		sleep 4
