@@ -175,9 +175,8 @@ function users_menu() {
 		I|i)
 		# Checks if User ID is 0 or not.
 		 read -p "What user do you want to check? " user
-		 uid=$(grep "$user" /etc/passwd | cut -d: -f3)
 
-		 if [[ "$uid" == 0 ]] ; then
+		 if [[ grep "$user" /etc/passwd | cut -d: -f3 == 0 ]] ; then
 
 		 	echo ""
 		 	echo "User $user has a UID of 0."
