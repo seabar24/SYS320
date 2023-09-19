@@ -178,7 +178,7 @@ function users_menu() {
    
    		 if  grep -q "$user" /etc/passwd ; then
 
-		 	if [ grep "$user" /etc/passwd | cut -d: -f3 ] == 0 ; then
+		 	if [ grep "$user" /etc/passwd | cut -d: -f3 == 0 ] ; then
 
 		 		echo ""
 		 		echo "User $user has a UID of 0."
