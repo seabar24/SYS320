@@ -176,7 +176,7 @@ function users_menu() {
 		# Checks if User ID is 0 or not.
 		 read -p "What user do you want to check? " user
    
-   		 if  grep -q "# $user" /etc/passwd ; then
+   		 if  grep -q "$user" /etc/passwd ; then
 
 		 	if grep "$user" /etc/passwd | cut -d: -f3 ; then
 
