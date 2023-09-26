@@ -48,6 +48,7 @@ function firewall()	{
 	echo "[I]ptables"
 	echo "[C]isco"
 	echo "[W]indows"
+ 	echo "[P]arse Cisco Threats"
 	read -p "Please enter a choice above: " choice
 
 	case "$choice" in
