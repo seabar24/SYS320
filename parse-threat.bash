@@ -83,30 +83,28 @@ function firewall()	{
 			 done
 			;;
 			C|c)
-			 # Creates Default Cisco file
-			 echo '
-			 #enable
-			 #configure
-			 #access-list 50 deny ip source-address source-mask any
-			 #interface GigabitEthernet0/1
-			 #ip access group 50 in
-			 #exit
-			 #write memory
-			 enable
-			 configure
-			 ' | tee cisco.txt
+			 # Adds bad Ips to Cisco list
 			 for eachIP in $(cat badIPs.txt)
 			 do
-			    echo "access-list 50 deny ${eachIP} source-mask any"
+			 	echo "deny ip host ${eachIP} any" | tee -a badIPs.cisco
 			 done
-			 echo '
-			 interface GigabitEthernet0/1
-			 ip access-group 50 in
-			 exit
-			 write memory
-			 ' | tee -a cisco.txt
 			;;
 			W|w)
+			 # Adds bad IPs to a Windows Firewall Drop list
+			 for eachIP in $(cat badIPs.txt)
+			 do
+			 	echo "netsh advfirewall firewall add rule name=\ "BLOCK IP ADDRESS - ${eachip}\" dir=in action=block remoteip=${eachIP}" | tee -a badIPs.netsh
+			 done
+			;;
+			P|p)
+			 # Gets targetedthreats, outputs it to targetedthreats.csv, and parses Cisco threats
+			 wget https://raw.githubusercontent.com/botherder/targetedthreats/master/targetedthreats.csv -O /tmp/targetedthreats.csv
+			 awk '/domain/ {print}' /tmp/targetedthreats.csv | awk -F \" '{print $4}' | sort -u > targetedthreats.txt
+			 echo 'class-map match-any BAD_URLS' | tee ciscothreats.txt
+			 for eachIP in $(cat targetedthreats.txt)
+			 do
+			 	echo "match protocol http host \"${eachIP}\"" | tee -a ciscothreats.txt
+			 done
 			;;
 			*)
 
