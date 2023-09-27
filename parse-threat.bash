@@ -25,8 +25,7 @@ then
 
  	if [[ "${to_overwrite}" == "N" || "${to_overwrite}" == "" || "${to_overwrite}" == "n"  ]]
  	then
- 		echo "Exiting..."
- 		exit 0
+ 		echo "Continuing..."
  	elif [[ "${to_overwrite}" == "y" ]]
  	then
  		echo "Downloading Emerging Threats File..."
@@ -108,11 +107,8 @@ function firewall()	{
 			 done
 			;;
 			*)
-
-				echo ""
-				echo "Nuh uh"
-				echo ""
-				sleep 2
+			 echo "Nuh uh"
+			 sleep 2
 			;;
 	esac
 }
