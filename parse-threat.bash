@@ -25,8 +25,7 @@ then
 
  	if [[ "${to_overwrite}" == "N" || "${to_overwrite}" == "" || "${to_overwrite}" == "n"  ]]
  	then
- 		echo "Exiting..."
- 		exit 0
+ 		echo "Continuing..."
  	elif [[ "${to_overwrite}" == "y" ]]
  	then
  		echo "Downloading Emerging Threats File..."
@@ -100,19 +99,16 @@ function firewall()	{
 			P|p)
 			 # Gets targetedthreats, outputs it to targetedthreats.csv, and parses Cisco threats
 			 wget https://raw.githubusercontent.com/botherder/targetedthreats/master/targetedthreats.csv -O /tmp/targetedthreats.csv
-			 awk '/domain/ {print}' /tmp/targetedthreats.csv | awk -F \" '{print $4}' | sort -u > targetedthreats.txt
+			 awk '/domain/ {print}' /tmp/targetedthreats.csv | awk -F \" '{print $4}' | sort -u > threats.txt
 			 echo 'class-map match-any BAD_URLS' | tee ciscothreats.txt
-			 for eachIP in $(cat targetedthreats.txt)
+			 for eachIP in $(cat threats.txt)
 			 do
-			 	echo "match protocol http host \"${eachIP}\"" | tee -a ciscothreats.txt
+				echo "match protocol http host \"${eachIP}\"" | tee -a ciscothreats.txt
 			 done
 			;;
 			*)
-
-				echo ""
-				echo "Nuh uh"
-				echo ""
-				sleep 2
+			 echo "Nuh uh"
+			 sleep 2
 			;;
 	esac
 }
