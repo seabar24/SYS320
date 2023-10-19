@@ -7,3 +7,7 @@
 * [Week 4 Scripts and Recordings](https://github.com/seabar24/SYS320/wiki/Week-4-Scripts-and-Recordings)
 
 * [Week 5 Scripts and Recordings](https://github.com/seabar24/SYS320/wiki/Week-5-Scripts-and-Recordings)
+
+* [Week 6 Scripts and Recordings](https://github.com/seabar24/SYS320/wiki/Week-6-Scripts-and-Recordings)
+
+* [Week 8 Scripts and Recordings](https://github.com/seabar24/SYS320/wiki/Week-8-Scripts-and-Recordings)
