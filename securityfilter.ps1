@@ -2,7 +2,9 @@
 
 # Directory to save files:
 
-$myDir = "C:\Users\sbarrick\Desktop\"
+$user = whoami | Split-Path -Leaf
+
+$myDir = "C:\Users\$user\Desktop\"
 
 # List all the available windows Event logs
 Get-Eventlog -list
@@ -10,9 +12,9 @@ Get-Eventlog -list
 # Create a prompt to allow user to select the log to view
 $readLog = Read-Host -Prompt "Please select a log to review from the list above"
 
-# print the results for the log
-Get-EventLog -LogName $readLog -Newest 40 | where {$_.Message -ilike "*new process has been*" }| export-csv -NoTypeInformation `
--Path "$myDir\securitylogs.csv"
+# Creates a prompt to allow user to search for a keyword or phrase to search on.
+$keyword= Read-Host -Prompt "Enter a keyword or phrase you would like to search for"
 
-# Task: Create a prompt that allow the user to specify a keyword or phrase to search on.
-# Find a string from your event logs to search on
+# print the results for the log
+Get-EventLog -LogName $readLog | where {$_.Message -ilike "*$keyword*" } | export-csv -NoTypeInformation `
+-Path "$myDir\securitylogs.csv"
