@@ -10,4 +10,7 @@
 # Bonus: get the DHCP server.
 # Post your code to pineapple
 # Running your code using a screen recorder.
-
+# Get-WmiObject -Class Win32_NetworkAdapterConfiguration
+Get-WMIobject -Class Win32_NetworkAdapterConfiguration | Where { $_.IPAddress } | Select-Object -ExpandProperty IPAddress
+Get-WMIobject -Class Win32_NetworkAdapterConfiguration | Where { $_.DefaultIPGateway } | Select-Object -ExpandProperty DefaultIPGateway
+Get-WMIobject -Class Win32_NetworkAdapterConfiguration | Where { $_.DNSDomain } | Select-Object -ExpandProperty DNSDomain
