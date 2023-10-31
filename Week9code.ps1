@@ -3,8 +3,8 @@
 # Used to set the user for the file path
 $user = whoami | Split-Path -Leaf
 # Gets the Running Processes and Services on the System. Exports them to a CSV file
- Get-Process | Select-Object Path, ProcessName, ID, StartTime | Export-Csv -Path "C:\Users\$user\SYS320\myProcesses.csv" -NoTypeInformation
- Get-Service | where { $_.Status -eq "Running" } | Export-Csv -Path "C:\Users\$user\SYS320\myServices.csv" -NoTypeInformation
+ Get-Process | Select-Object Path, ProcessName, ID, StartTime | Export-Csv -Path "C:\Users\$user\Desktop\myProcesses.csv" -NoTypeInformation
+ Get-Service | where { $_.Status -eq "Running" } | Export-Csv -Path "C:\Users\$user\Desktop\myServices.csv" -NoTypeInformation
 
 # Get's IP Address, Default Gateway, and DNS Domain
 # Get-WMIobject -Class Win32_NetworkAdapterConfiguration | Where { $_.IPAddress } | Select-Object -ExpandProperty IPAddress
