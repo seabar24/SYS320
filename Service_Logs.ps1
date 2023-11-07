@@ -1,45 +1,60 @@
 ﻿# Storyling: Writing a program that gets all Services. Filters services based on user's answer for: running, stopped, and all.
 
-$validOptions = @('all', 'stopped', 'running', 'quit')
+# $validOptions = @('all', 'stopped', 'running', 'quit')
 
-function List-ServicesByStatus {
-    param ([string]$status)
-
-    $services = Get-Service | Where-Object { $_.Status -eq $status }
-    $services
-
-}
-
-while($true) {
+# Function that checks for all service logs. All, running, or stopped.
+function service_log() {
 
     cls
-    Write-Host "Service Status Viewer"
-    Write-Host "1. View all services"
-    Write-Host "2. View running services"
-    Write-Host "3. View stopped services"
-    Write-Host "Q|q. Quit"
 
-    $choice = Read-Host "Enter your choice: "
+    #$services = @('all', 'stopped', 'running')
 
-    if ($choice -in 1..3) {
-        $chosen = $validOptions[$choice - 1]
-        $services = List-SevicesByStatus $chosen
+    Write-Host "1. All"
 
-        Write-Host $services
+    Write-Host "2. Stopped"
 
-        if ($services.Count -eq 0) {
-            Write-Host -BackgroundColor red -ForegroundColor white "No services with the status: $chosen"
-        } else {
-            Write-Host -BackgroundColor green -ForegroundColor white "Services with status: $chosen"
-            $services | Format-Table -AutoSize
-        }
+    Write-Host "3. Running"
 
-    } elseif ($chosen -match "^[qQ]$") {
-        
-            # Stop executing the program and close the script
-            break
+    # Accept the user input and determine whether they selected option 1,2,3 or to quit.
+    $input = Read-Host -Prompt "Select an option to view, or enter q to quit"
+    
+    # All Services
+    if ($input -eq "1" -or $input -eq "all" -or $input -eq "All") {
 
-    } else {
+        Get-Service
+        read-host -Prompt "`nPress enter when finished."
+        service_log
+    }
+
+    # Stopped Services
+    elseif ($input -eq "2" -or $input -eq "stopped" -or $input -eq "Stopped") {
+
+        Get-Service | Where-Object { $_.Status -eq "stopped" }
+        read-host -Prompt "`nPress enter when finished."
+        service_log
+
+    }
+
+    # Running Services
+    elseif ($input -eq "3" -or $input -eq "running" -or $input -eq "Running") {
+
+        Get-Service | Where-Object { $_.Status -eq "running" }
+        read-host -Prompt "Press enter when finished."
+        service_log
+    }
+    # Quit the program
+    elseif ($input -match "^[qQ]$") {
+
+        break
+    }
+
+    # When the input is not one of the above
+    else {
+
         write-host -BackgroundColor red -ForegroundColor white "`nWRONG WRONG WRONG.`n NUH UH NUH UH."
+        sleep 2
+        service_log
     }
-    }
+
+}
+service_log
