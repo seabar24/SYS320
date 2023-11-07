@@ -21,16 +21,18 @@ function service_log() {
     # All Services
     if ($input -eq "1" -or $input -eq "all" -or $input -eq "All") {
 
+        Write-Host " "
         Get-Service
-        read-host -Prompt "`nPress enter when finished."
+        read-host -Prompt "`n`nPress enter when finished."
         service_log
     }
 
     # Stopped Services
     elseif ($input -eq "2" -or $input -eq "stopped" -or $input -eq "Stopped") {
 
+        Write-Host " "
         Get-Service | Where-Object { $_.Status -eq "stopped" }
-        read-host -Prompt "`nPress enter when finished."
+        read-host -Prompt "`n`nPress enter when finished."
         service_log
 
     }
@@ -38,8 +40,9 @@ function service_log() {
     # Running Services
     elseif ($input -eq "3" -or $input -eq "running" -or $input -eq "Running") {
 
+        Write-Host " "
         Get-Service | Where-Object { $_.Status -eq "running" }
-        read-host -Prompt "Press enter when finished."
+        read-host -Prompt "`n`nPress enter when finished."
         service_log
     }
     # Quit the program
