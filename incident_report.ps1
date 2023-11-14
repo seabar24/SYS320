@@ -16,17 +16,25 @@ function incident_menu (){
     Write-Host "4. User Information"
     Write-Host "5. Network Configuration Information"
     Write-Host "6. Installed Programs"
+    Write-Host "7. OS Build"
+    Write-Host "8. Scheduled Tasks"
+    Write-Host "9. Event Logs"
     $choice = Read-Host "`nSelect a choice above or 'q' to quit"
 
     # Retrieves all Running Processes and executable path
     if ($choice -eq "1") {
         
         $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
         cls
         Write-Host "`nWait a few moments for the query to retrieve the services."
         sleep 3
         cls
-        Get-Process | Select-Object ProcessName, Path, ID | `
+        Get-Process | Select-Object StartTime, ProcessName, ID, Path | `
         Export-Csv -Path "C:\$path\processes.csv" -NoTypeInformation
 
         Write-Host "`nSaving to file..."
@@ -34,15 +42,19 @@ function incident_menu (){
         Write-Host "Done!"
         Read-Host "Press 'Enter' when you are done"
         hash -filePath "C:\$path\processes.csv"
-        compress -sourceDir "C:\$path"
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
         incident_menu
 
     }
     #Will Query all registered services and the executable path
     elseif ($choice -eq "2") {
 
-        cls
         $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
         cls
         $wmiQuery = "SELECT * FROM Win32_Service"
         $services = Get-WmiObject -Query $wmiQuery
@@ -66,13 +78,18 @@ function incident_menu (){
         Write-Host "Done!"
         Read-Host "Press 'Enter' when you are done"
         hash -filePath "C:\$path\services.csv"
-        compress -sourceDir "C:\$path"
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
         incident_menu
     }
     # Retrieves all TCP Network Sockets
     elseif ($choice -eq "3") {
     
         $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
         cls
         Write-Host "Wait a few moments for the query to retrieve the TCP Information."
         sleep 3
@@ -85,13 +102,18 @@ function incident_menu (){
         Write-Host "Done!"
         Read-Host "`nPress 'Enter' when you are done"
         hash -filePath "C:\$path\tcpsockets.csv"
-        compress -sourceDir "C:\$path"
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
         incident_menu
     }
     # Retrieves User Information
     elseif ($choice -eq "4") {
 
         $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
         cls
         Write-Host "Wait a few moments for the query to retrieve the TCP Information."
         sleep 3
@@ -103,13 +125,18 @@ function incident_menu (){
         Write-Host "Done!"
         Read-Host "`nPress 'Enter' when you are done"
         hash -filePath "C:\$path\userinfo.csv"
-        compress -sourceDir "C:\$path"
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
         incident_menu
     }
     # Retrieves Network information
     elseif ($choice -eq "5") {
 
         $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
 
         cls
         Write-Host "Wait a few moments for the query to retrieve the Network Configuration."
@@ -126,16 +153,21 @@ function incident_menu (){
         Write-Host "Done!"
         Read-Host "`nPress 'Enter' when you are done"
         hash -filePath "C:\path\networkinfo.csv" 
-        compress -sourceDir "C:\$path"
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
         incident_menu
     }
     # Retrieves installed programs
     elseif ($choice -eq "6") {
         
         $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
 
         cls
-        Write-Host "Wait a few moments for the query to retrieve the Network Configuration."
+        Write-Host "Wait a few moments for the query to retrieve the installed programs."
         sleep 3
         cls
 
@@ -147,7 +179,86 @@ function incident_menu (){
         Write-Host "Done!"
         Read-Host "`nPress 'Enter' when you are done"
         hash -filePath "C:\$path\programs.csv" -NoTypeInformation
-        compress -sourceDir "C:\$path"
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
+        incident_menu
+    }
+    # Retreieves the Operating System's Build
+    elseif ($choice -eq "7") {
+
+        $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
+
+        cls
+        Write-Host "Wait a few moments for the query to retrieve the os build."
+        sleep 3
+        cls
+
+        Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, servicepackmajorversion, BuildNumber, CSName, LastBootUpTime | `
+        Export-Csv -Path "C:\$path\osbuild.csv" -NoTypeInformation
+
+        Write-Host "`nSaving to file..."
+        sleep 3
+        Write-Host "Done!"
+        Read-Host "`nPress 'Enter' when you are done"
+        hash -filePath "C:\$path\osbuild.csv" -NoTypeInformation
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
+        incident_menu
+    }
+    # Retrieves scheduled tasks that are out of the ordinary from normal Scheduled Tasks
+    elseif ($choice -eq "8") {
+
+        $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
+
+        cls
+        Write-Host "Wait a few moments for the query to retrieve the Scheduled Tasks."
+        sleep 3
+
+        cls
+        Get-ScheduledTask | Select-Object TaskName, TaskPath, Date, Author, Actions, Triggers, Description, State | Where Author -NotLike 'Microsoft*' | Where Author -ne $null | Where Author -NotLike '*@SystemRoot%\*' | `
+        Export-Csv -Path "C:\$path\scheduledtasks.csv" -NoTypeInformation
+
+        Write-Host "`nSaving to file..."
+        sleep 3
+        Write-Host "Done!"
+        Read-Host "`nPress 'Enter' when you are done"
+        hash -filePath "C:\$path\scheduledtasks.csv" -NoTypeInformation
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
+        incident_menu
+
+    }
+    # Retrieves the Event Logs from the last 20 entries of errors or warnings that appear as well as when they were generated, where, entrytype, and message.
+    elseif ($choice -eq "9") {
+
+        $path = path
+        $zipFolderPath = "C:\$path\zipFolder"
+        $zipFilePath = Join-Path $zipFolderPath "incident_report.zip"
+        if (-not (Test-Path $zipFolderPath)) {
+            New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
+        }
+
+        cls
+        Write-Host "Wait a few moments for the query to retrieve the Event Logs."
+        sleep 3
+
+        cls
+        Get-Eventlog -LogName system -Newest 20 | Select-Object -Property TimeGenerated, Source, EntryType, Message | Where {$_.EntryType -eq "warning" -or $_.EntryType -eq "error"} | `
+        Export-Csv -Path "C:\$path\eventlogs.csv" -NoTypeInformation
+
+        Write-Host "`nSaving to file..."
+        sleep 3
+        Write-Host "Done!"
+        Read-Host "`nPress 'Enter' when you are done"
+        hash -filePath "C:\$path\eventlogs.csv" -NoTypeInformation
+        compress -sourceDir "C:\$path" -zipFilePath "$zipFilePath"
         incident_menu
     }
     # Quit the program
@@ -159,7 +270,7 @@ function incident_menu (){
     else {
 
         Write-Host -BackgroundColor red -ForegroundColor white "`nHOW MANY TIMES DO WE HAVE TO TEACH THIS LESSON OLD MAN?"
-        sleep 10
+        sleep 5
         incident_menu
     }
 }
@@ -186,14 +297,14 @@ function hash() {
 }
 # Compresses the outputs of the commands into a .zip file.
 function compress() {
-    param([string]$sourceDir)
+    param (
+        [string]$sourceDir,
+        [string]$zipFilePath
+    )
 
-    $path = Read-Host "Enter the file path for the .zip file"
-    $zipDir = Join-Path (cd .. | Resolve-Path) $path
-
-    Compress-Arhcive -Path $sourceDir -DestinationPath "$path/incident_report.zip"
-    Get-FileHash -Path "$path/incident_report.zip" -Algorithm SHA256 | `
-    Out-File "C:\$path\zip_checksum.txt" -Append
+    Compress-Archive -Path $sourceDir -DestinationPath $zipFilePath -Force
+    $zip = Get-FileHash -Path "$zipFilePath" -Algorithm SHA256
+    $zip | Out-File "C:\$path\zip_checksum.txt" -Append
 
 }
 incident_menu
