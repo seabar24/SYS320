@@ -19,3 +19,5 @@
 * [Week 11 Scripts and Recordings](https://github.com/seabar24/SYS320/wiki/Week-11-Scripts-and-Recordings)
 
 * [Week 12 Scripts and Recordings](https://github.com/seabar24/SYS320/wiki/Week-12-Scripts-and-Recordings)
+
+* [Week 13 Scripts and Recordings](https://github.com/seabar24/SYS320/wiki/Week-13-Scripts-and-Recordings)
