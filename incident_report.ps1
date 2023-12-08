@@ -115,7 +115,7 @@ function incident_menu (){
             New-Item -ItemType Directory -Path $zipFolderPath | Out-Null
         }
         cls
-        Write-Host "Wait a few moments for the query to retrieve the TCP Information."
+        Write-Host "Wait a few moments for the query to retrieve the users information."
         sleep 3
         Get-WmiObject -Class Win32_UserAccount | `
         Export-Csv -Path "C:\$path\userinfo.csv" -NoTypeInformation

@@ -1,5 +1,15 @@
 ﻿# Array of websites containing threat intell
+function parseIntel() {
 $drop_urls = @('https://rules.emergingthreats.net/blockrules/emerging-botcc.rules','https://rules.emergingthreats.net/blockrules/compromised-ips.txt')
+
+
+#Asks for choice from User to pick which format of OS would they like to have threats parsed as.
+cls
+Write-Host "Which format of parsing would you like to choose?"
+Write-Host " "
+Write-Host "1. Windows"
+Write-Host "2. Linux"
+$choice = Read-Host "`nChoose 1 or 2" 
 
 # Loop through the URLs for the rules list
 foreach ($u in $drop_urls) {
@@ -37,9 +47,28 @@ ForEach-Object { $_.Matches } | `
 ForEach-Object { $_.Value } | Sort-Object | Get-Unique | `
 Out-File -FilePath "ips-bad.tmp"
 
-# Get the IP addresses discovered. loop through and replace the beginning of the line with the IPTables syntax
-# After the IP address, add the remaining IPTables syntax and save the results to a file.
-# iptables -A INPUT -s 108.191.2.72 -j DROP
-(Get-Content -Path ".\ips-bad.tmp") | % `
-{ $_ -replace "^","iptables -A INPUT -s " -replace "$", " -j DROP" } | `
-Out-File -FilePath "iptables.bash"
+# Switch Statement
+switch ($choice) {
+    "1" {
+    # Adds Windows firewall rules and saves to file.
+        (Get-Content -Path ".\ips-bad.tmp") | % `
+            { $_ -replace "^",'netsh advfirewall firewall add rule name="BLOCK IP ADDRESS - ' -replace '$', '"' } | `
+            Out-File -FilePath ".\msfirewall.netsh"
+        }
+    
+    "2" {
+    # After the IP, add the remaining IPTables syntax and save results to a file.
+        (Get-Content -Path ".\ips-bad.tmp") | % `
+            { $_ -replace "^","iptables -A INPUT -s " -replace "$", "-j DROP" } | `
+            Out-File -FilePath ".\iptables.bash"
+        }
+
+    else {
+    # Else if 1 or 2 are not chosen
+        Write-Host -BackgroundColor red -ForegroundColor white "You're so wrong.`n Like super, duper, uber WRONG."
+        sleep 3
+        parseIntel
+        }
+    }
+}
+parseIntel
